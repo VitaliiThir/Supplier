@@ -1,0 +1,19 @@
+{
+  "name": "vitalik/supplier",
+  "description": "File parser",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Supplier\\": "app/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Vitaly Tkhir"
+    }
+  ],
+  "require": {
+    "ext-json": "*",
+    "ext-simplexml": "*"
+  }
+}
