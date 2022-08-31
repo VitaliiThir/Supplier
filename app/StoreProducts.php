@@ -11,16 +11,12 @@ use Exception;
 
 class StoreProducts extends Parser
 {
-    public function update()
-    {
-        return $this->get_products_arr();
-    }
-
     /**
      * @throws ObjectPropertyException
      * @throws SystemException
      * @throws ArgumentException
      * @throws Exception
+     * Временный код обновления остатков для дальнейшего внедрения
      */
     private function get_store()
     {
