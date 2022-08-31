@@ -28,4 +28,23 @@ class Util
         $file_info = new SplFileInfo($file);
         return $file_info->getExtension();
     }
+
+    /**
+     * @param $arr
+     * @param $key
+     * @param $needle
+     * @return bool
+     */
+    static function in_assoc_array($arr, $key, $needle): bool
+    {
+        foreach ($arr as $item) {
+            foreach ($item as $sub_item) {
+                if ($sub_item[$key] == $needle) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

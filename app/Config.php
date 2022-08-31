@@ -31,6 +31,12 @@ trait Config
     public string $catalog_quantity = 'CATALOG_QUANTITY';
 
     /**
+     * @var string
+     * ID инфоблока товаров
+     */
+    public string $catalog_ib_id = '3';
+
+    /**
      * @var array|string[]
      * Разрешенные форматы файлов
      */

@@ -12,7 +12,7 @@ class Parser extends Supplier
      */
     public function get_xml_to_php_arr(string $file_name)
     {
-        $arr = [];
+        $arr = false;
         $xml = simplexml_load_file($file_name);
 
         foreach ($xml as $item) {
@@ -20,7 +20,7 @@ class Parser extends Supplier
             $cnt = trim((string)$item->Count);
 
             if ($art && $cnt) {
-                $arr[] = [
+                $arr[$art] = [
                     $this->unique_prod_prop => $art,
                     $this->catalog_quantity => $cnt
                 ];
@@ -28,8 +28,6 @@ class Parser extends Supplier
         }
 
         if (!is_array($arr) || empty($arr)) {
-            $arr = false;
-
             $this->write_error_logs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла XML;\n");
         }
 
@@ -42,7 +40,7 @@ class Parser extends Supplier
      */
     public function get_csv_to_php_arr(string $file_name)
     {
-        $arr = [];
+        $arr = false;
         $file = fopen($file_name, 'r');
 
         while (($line = fgetcsv($file)) !== FALSE) {
@@ -50,7 +48,7 @@ class Parser extends Supplier
             $cnt = trim(explode($this->csv_separator, $line[0])[1]);
 
             if ($art && $cnt) {
-                $arr[] = [
+                $arr[$art] = [
                     $this->unique_prod_prop => $art,
                     $this->catalog_quantity => $cnt,
                 ];
@@ -62,8 +60,6 @@ class Parser extends Supplier
         if (is_array($arr) && !empty($arr)) {
             return array_slice($arr, 1);
         } else {
-            $arr = false;
-
             $this->write_error_logs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла CSV;\n");
         }
 
@@ -77,7 +73,7 @@ class Parser extends Supplier
      */
     public function get_json_to_php_arr(string $file_name)
     {
-        $arr = [];
+        $arr = false;
         $json = file_get_contents($file_name);
         $json_data = json_decode($json,true);
 
@@ -86,7 +82,7 @@ class Parser extends Supplier
             $cnt = trim($item['count']);
 
             if ($art && $cnt) {
-                $arr[] = [
+                $arr[$art] = [
                     $this->unique_prod_prop => $art,
                     $this->catalog_quantity => $cnt
                 ];
@@ -94,8 +90,6 @@ class Parser extends Supplier
         }
 
         if (!is_array($arr) || empty($arr)) {
-            $arr = false;
-
             $this->write_error_logs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла JSON;\n");
         }
 
@@ -103,7 +97,7 @@ class Parser extends Supplier
     }
 
     /**
-     * @return array
+     * @return array|false
      */
     public function get_products_arr(): array
     {
@@ -146,6 +140,11 @@ class Parser extends Supplier
                 }
             }
         }
+
+        if (!is_array($prods) || empty($prods)) {
+            return false;
+        }
+
         return $prods;
     }
 }
