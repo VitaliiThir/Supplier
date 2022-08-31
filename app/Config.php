@@ -14,7 +14,7 @@ trait Config
 
     /**
      * @var string
-     * Название папки для хранения файлов с остатками (wh = warehouse)
+     * Название папки для хранения файлов с остатками
      */
     public string $files_folder = 'store';
 
