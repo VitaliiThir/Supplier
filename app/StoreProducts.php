@@ -116,7 +116,7 @@ class StoreProducts extends Parser
                 $amount = (int) $product[$this->catalog_quantity];
 
                 $rsStoreProduct = StoreProductTable::getList(array(
-                    'filter' => array('=PRODUCT_ID' => $product_id, 'STORE.ACTIVE' => 'Y', '=STORE_ID'=>$store_id),
+                    'filter' => array('=PRODUCT_ID' => $product_id, 'STORE.ACTIVE' => 'Y'),
                 ));
 
                 if ($arStoreProduct = $rsStoreProduct->fetch()) {
