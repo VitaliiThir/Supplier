@@ -9,6 +9,7 @@ require('vendor/autoload.php');
 Loader::includeModule('catalog');
 
 $store = new StoreProducts();
+
 $store->store_products_update();
 
 

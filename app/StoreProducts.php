@@ -111,34 +111,43 @@ class StoreProducts extends Parser
     {
         try {
             $totals = [];
+            $storesToRecords = [];
+
+            $productIds = array_unique(array_column($this->final_products_arr, 'PRODUCT_ID'));
+
+            foreach ($productIds as $productId) {
+                $store_product_table = StoreProductTable::getList(['filter'=>['=PRODUCT_ID' => $productId]])->fetchAll();
+
+                foreach ($store_product_table as $arRecord) {
+                    $totals[$productId][$arRecord['STORE_ID']] = $arRecord['AMOUNT'];
+                    $storesToRecords[$productId][$arRecord['STORE_ID']] = $arRecord['ID'];
+                }
+            }
 
             foreach ($this->final_products_arr as $product) {
-                $product_id = (int)$product['PRODUCT_ID'];
-                $store_id = (int)$product['STORE_ID'];
-                $amount = (int)$product[$this->catalog_quantity];
+                $product_id = (int) $product['PRODUCT_ID'];
+                $store_id = $product['STORE_ID'];
+                $amount = $product[$this->catalog_quantity];
 
-                $rsStoreProduct = StoreProductTable::getList(array(
-                    'filter' => array('=PRODUCT_ID' => $product_id, 'STORE.ACTIVE' => 'Y', '=STORE_ID' => $store_id),
-                ));
-
-                if ($arStoreProduct = $rsStoreProduct->fetch()) {
-                    $updateStore = StoreProductTable::update(
-                        $arStoreProduct['ID'],
-                        array(
-                            'PRODUCT_ID' => $product_id,
-                            'AMOUNT' => $amount
-                        )
-                    );
+                if ($recordId = $storesToRecords[$product_id][$store_id] ) {
+                    if ($totals[$product_id][$store_id] != $amount) {
+                        StoreProductTable::update(
+                            $recordId,
+                            array(
+                                'AMOUNT' => $amount
+                            )
+                        );
+                    }
                 } else {
-                    $addStore = \Bitrix\Catalog\StoreProductTable::add(array('PRODUCT_ID' => $product_id, 'STORE_ID' => $store_id, 'AMOUNT' => $amount));
+                    StoreProductTable::add(array('PRODUCT_ID' => $product_id, 'STORE_ID' => $store_id, 'AMOUNT' => $amount));
                 }
 
                 $totals[$product_id] += $amount;
 
             }
 
-            foreach ($totals as $product_id => $quantity) {
-                $updateQuantity = ProductTable::update($product_id, array('QUANTITY' => $quantity));
+            foreach ($totals as $product_id => $stores) {
+                ProductTable::update($product_id, array('QUANTITY' => array_sum($stores)));
             }
 
         } catch (LoaderException $e) {
