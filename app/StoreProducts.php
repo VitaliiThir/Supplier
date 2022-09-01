@@ -112,6 +112,7 @@ class StoreProducts extends Parser
         try {
             $totals = [];
             $storesToRecords = [];
+            $updatableProductsIds = [];
 
             $productIds = array_unique(array_column($this->finalProductsArr, 'PRODUCT_ID'));
 
@@ -142,23 +143,20 @@ class StoreProducts extends Parser
                     }
 
                     $totals[$productId][$storeId] = $amount;
-                }/* else {
-                    if (isset($totals[$productId][$storeId])) {
-                        unset($totals[$productId][$storeId]);
-                    }
-                }*/
+
+                    $updatableProductsIds[] = $productId;
+                }
 
             }
-
-            $cnt = 0;
 
             foreach ($totals as $productId => $stores) {
-                ProductTable::update($productId, array('QUANTITY' => array_sum($stores)));
-                echo "Product [#$productId] - updated (ok)\n";
-                $cnt++;
+                if (in_array($productId, $updatableProductsIds)) {
+                    ProductTable::update($productId, array('QUANTITY' => array_sum($stores)));
+                    echo "Product [#$productId] - updated (ok)\n";
+                }
             }
 
-            if ($cnt > 0) {
+            if (count($updatableProductsIds) > 0) {
                 echo 'Products updated successfully!';
             } else {
                 echo 'No products to update';
