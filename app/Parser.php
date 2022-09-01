@@ -101,24 +101,23 @@ class Parser extends Supplier
      */
     public function get_products_arr(): array
     {
-        $_SERVER["DOCUMENT_ROOT"] = realpath(dirname(__FILE__)."/../");
         $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
         $files_dir = $this->files_folder;
-        $files_dir_full_path = $this->files_folder($DOCUMENT_ROOT);
+        $files_dir_full_path = $this->files_folder();
         $prods = [];
 
         if (is_dir($files_dir)) {
-            $wh_dirs = scandir($files_dir);
+            $store_dirs = scandir($files_dir);
 
-            foreach ($wh_dirs as $wh_dir) {
-                if ($wh_dir != '.' && $wh_dir != '..') {
-                    if (is_dir("$files_dir/$wh_dir") && !empty(glob("$files_dir/$wh_dir/*.*"))) {
-                        $file = scandir("$files_dir/$wh_dir", 1);
+            foreach ($store_dirs as $store_dir) {
+                if ($store_dir != '.' && $store_dir != '..') {
+                    if (is_dir("$files_dir/$store_dir") && !empty(glob("$files_dir/$store_dir/*.*"))) {
+                        $file = scandir("$files_dir/$store_dir", 1);
                         $file_name = $file[0];
                         $file_ext = Util::get_file_extension($file_name);
 
                         if (in_array($file_ext, $this->files_exts)) {
-                            $file_path = "$files_dir_full_path/$wh_dir/$file_name";
+                            $file_path = "$files_dir_full_path/$store_dir/$file_name";
                             $arr = [];
 
                             switch ($file_ext) {
@@ -134,7 +133,7 @@ class Parser extends Supplier
                             }
 
                             if (is_array($arr)) {
-                                $prods[$wh_dir] = $arr;
+                                $prods[$store_dir] = $arr;
                             }
                         }
                     }
