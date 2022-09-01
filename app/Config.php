@@ -60,7 +60,9 @@ trait Config
      */
     public function getFilesFolder($documentRoot = false): string
     {
-        return $documentRoot ? "$documentRoot/$this->rootFolderName/$this->filesFolderName" : "/$this->rootFolderName/$this->filesFolderName";
+        return $documentRoot
+            ? "$documentRoot/$this->rootFolderName/$this->filesFolderName"
+            : "/$this->rootFolderName/$this->filesFolderName";
     }
 
     /**

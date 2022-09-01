@@ -148,7 +148,7 @@ class StoreProducts extends Parser
 
             foreach ($totals as $productId => $stores) {
                 ProductTable::update($productId, array('QUANTITY' => array_sum($stores)));
-                echo "Товар [#$productId] - обновлен.\n";
+                echo "Товар [#$productId] - обновлен\n";
             }
 
         } catch (LoaderException $e) {
