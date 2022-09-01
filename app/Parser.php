@@ -7,13 +7,13 @@ class Parser extends Supplier
     use Config;
 
     /**
-     * @param string $file_name
+     * @param string $fileName
      * @return array|false
      */
-    public function getXmlToPhpArr(string $file_name)
+    public function getXmlToPhpArr(string $fileName)
     {
         $arr = false;
-        $xml = simplexml_load_file($file_name);
+        $xml = simplexml_load_file($fileName);
 
         foreach ($xml as $item) {
             $art = trim((string)$item->Article);
@@ -35,13 +35,13 @@ class Parser extends Supplier
     }
 
     /**
-     * @param string $file_name
+     * @param string $fileName
      * @return array|false
      */
-    public function getCsvToPhpArr(string $file_name)
+    public function getCsvToPhpArr(string $fileName)
     {
         $arr = false;
-        $file = fopen($file_name, 'r');
+        $file = fopen($fileName, 'r');
 
         while (($line = fgetcsv($file)) !== FALSE) {
             $art = trim(explode($this->csvSeparator, $line[0])[0]);
@@ -68,13 +68,13 @@ class Parser extends Supplier
     }
 
     /**
-     * @param string $file_name
+     * @param string $fileName
      * @return array|false
      */
-    public function getJsonToPhpArr(string $file_name)
+    public function getJsonToPhpArr(string $fileName)
     {
         $arr = false;
-        $json = file_get_contents($file_name);
+        $json = file_get_contents($fileName);
         $json_data = json_decode($json, true);
 
         foreach ($json_data as $item) {
