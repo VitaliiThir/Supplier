@@ -152,7 +152,7 @@ class StoreProducts extends Parser
             foreach ($totals as $productId => $stores) {
                 if (in_array($productId, $updatableProductsIds)) {
                     ProductTable::update($productId, array('QUANTITY' => array_sum($stores)));
-                    echo "\033[1;30m Product [#$productId] - updated \033[01;32m(ok)\n";
+                    echo "\033[1;30m Product [\033[0m#$productId\033[1;30m] - updated \033[01;32m(ok)\n";
                 }
             }
 
