@@ -146,7 +146,10 @@ class Parser extends Supplier
         }
 
         if (!is_array($prods) || empty($prods)) {
-            echo 'Ошибка выгрузки!';
+            $errorTxt = "Upload error!";
+            $this->writeErrorLogs($_SERVER["DOCUMENT_ROOT"], "$errorTxt;\n");
+            echo "\033[1;31m $errorTxt!\n";
+            die();
         }
 
         return $prods;
