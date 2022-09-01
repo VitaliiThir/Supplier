@@ -10,7 +10,7 @@ class Parser extends Supplier
      * @param string $file_name
      * @return array|false
      */
-    public function get_xml_to_php_arr(string $file_name)
+    public function getXmlToPhpArr(string $file_name)
     {
         $arr = false;
         $xml = simplexml_load_file($file_name);
@@ -21,14 +21,14 @@ class Parser extends Supplier
 
             if ($art && $cnt) {
                 $arr[$art] = [
-                    $this->unique_prod_prop => $art,
-                    $this->catalog_quantity => $cnt
+                    $this->uniqueProductPropName => $art,
+                    $this->catalogQuantity => $cnt
                 ];
             }
         }
 
         if (!is_array($arr) || empty($arr)) {
-            $this->write_error_logs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла XML;\n");
+            $this->writeErrorLogs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла XML;\n");
         }
 
         return $arr;
@@ -38,19 +38,19 @@ class Parser extends Supplier
      * @param string $file_name
      * @return array|false
      */
-    public function get_csv_to_php_arr(string $file_name)
+    public function getCsvToPhpArr(string $file_name)
     {
         $arr = false;
         $file = fopen($file_name, 'r');
 
         while (($line = fgetcsv($file)) !== FALSE) {
-            $art = trim(explode($this->csv_separator, $line[0])[0]);
-            $cnt = trim(explode($this->csv_separator, $line[0])[1]);
+            $art = trim(explode($this->csvSeparator, $line[0])[0]);
+            $cnt = trim(explode($this->csvSeparator, $line[0])[1]);
 
             if ($art && $cnt) {
                 $arr[$art] = [
-                    $this->unique_prod_prop => $art,
-                    $this->catalog_quantity => $cnt,
+                    $this->uniqueProductPropName => $art,
+                    $this->catalogQuantity => $cnt,
                 ];
             }
         }
@@ -60,7 +60,7 @@ class Parser extends Supplier
         if (is_array($arr) && !empty($arr)) {
             return array_slice($arr, 1);
         } else {
-            $this->write_error_logs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла CSV;\n");
+            $this->writeErrorLogs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла CSV;\n");
         }
 
         return $arr;
@@ -71,7 +71,7 @@ class Parser extends Supplier
      * @param string $file_name
      * @return array|false
      */
-    public function get_json_to_php_arr(string $file_name)
+    public function getJsonToPhpArr(string $file_name)
     {
         $arr = false;
         $json = file_get_contents($file_name);
@@ -83,14 +83,14 @@ class Parser extends Supplier
 
             if ($art && $cnt) {
                 $arr[$art] = [
-                    $this->unique_prod_prop => $art,
-                    $this->catalog_quantity => $cnt
+                    $this->uniqueProductPropName => $art,
+                    $this->catalogQuantity => $cnt
                 ];
             }
         }
 
         if (!is_array($arr) || empty($arr)) {
-            $this->write_error_logs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла JSON;\n");
+            $this->writeErrorLogs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла JSON;\n");
         }
 
         return $arr;
@@ -99,41 +99,40 @@ class Parser extends Supplier
     /**
      * @return array|false
      */
-    public function get_products_arr(): array
+    public function getProductsArr(): array
     {
         $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
-        $files_dir = $this->files_folder;
-        $files_dir_full_path = $this->files_folder();
+        $filesDirFullPath = $this->getFilesFolder($DOCUMENT_ROOT);
         $prods = [];
 
-        if (is_dir($files_dir)) {
-            $store_dirs = scandir($files_dir);
+        if (is_dir($filesDirFullPath)) {
+            $storeDirs = scandir($filesDirFullPath);
 
-            foreach ($store_dirs as $store_dir) {
-                if ($store_dir != '.' && $store_dir != '..') {
-                    if (is_dir("$files_dir/$store_dir") && !empty(glob("$files_dir/$store_dir/*.*"))) {
-                        $file = scandir("$files_dir/$store_dir", 1);
-                        $file_name = $file[0];
-                        $file_ext = Util::get_file_extension($file_name);
+            foreach ($storeDirs as $storeDir) {
+                if ($storeDir != '.' && $storeDir != '..') {
+                    if (is_dir("$filesDirFullPath/$storeDir") && !empty(glob("$filesDirFullPath/$storeDir/*.*"))) {
+                        $file = scandir("$filesDirFullPath/$storeDir", 1);
+                        $fileName = $file[0];
+                        $fileExt = Util::getFileExtension($fileName);
 
-                        if (in_array($file_ext, $this->files_exts)) {
-                            $file_path = "$files_dir_full_path/$store_dir/$file_name";
+                        if (in_array($fileExt, $this->filesExts)) {
+                            $filePath = "$filesDirFullPath/$storeDir/$fileName";
                             $arr = [];
 
-                            switch ($file_ext) {
+                            switch ($fileExt) {
                                 case 'xml':
-                                    $arr = $this->get_xml_to_php_arr($file_path);
+                                    $arr = $this->getXmlToPhpArr($filePath);
                                     break;
                                 case 'csv':
-                                    $arr = $this->get_csv_to_php_arr($file_path);
+                                    $arr = $this->getCsvToPhpArr($filePath);
                                     break;
                                 case 'json':
-                                    $arr = $this->get_json_to_php_arr($file_path);
+                                    $arr = $this->getJsonToPhpArr($filePath);
                                     break;
                             }
 
                             if (is_array($arr)) {
-                                $prods[$store_dir] = $arr;
+                                $prods[$storeDir] = $arr;
                             }
                         }
                     }
@@ -142,7 +141,6 @@ class Parser extends Supplier
         }
 
         if (!is_array($prods) || empty($prods)) {
-            echo $DOCUMENT_ROOT;
             return false;
         }
 

@@ -10,7 +10,7 @@ Loader::includeModule('catalog');
 
 $store = new StoreProducts();
 
-$store->store_products_update();
+$store->storeProductsUpdate();
 
 
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_after.php");

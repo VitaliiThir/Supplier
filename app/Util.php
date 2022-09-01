@@ -23,7 +23,7 @@ class Util
      * @return string
      * Получение расширения файла
      */
-    static function get_file_extension($file): string
+    static function getFileExtension($file): string
     {
         $file_info = new SplFileInfo($file);
         return $file_info->getExtension();
@@ -35,11 +35,11 @@ class Util
      * @param $needle
      * @return bool
      */
-    static function in_assoc_array($arr, $key, $needle): bool
+    static function inAssocArray($arr, $key, $needle): bool
     {
         foreach ($arr as $item) {
-            foreach ($item as $sub_item) {
-                if ($sub_item[$key] == $needle) {
+            foreach ($item as $subItem) {
+                if ($subItem[$key] == $needle) {
                     return true;
                 }
             }

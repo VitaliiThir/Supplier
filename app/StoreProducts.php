@@ -18,17 +18,17 @@ class StoreProducts extends Parser
     /**
      * @var array|false
      */
-    private array $store_products;
+    private array $storeProducts;
 
     /**
      * @var array|false
      */
-    private array $catalog_filtered_products;
+    private array $catalogFilteredProducts;
 
     /**
      * @var array
      */
-    private array $final_products_arr;
+    private array $finalProductsArr;
 
     /**
      * @throws ArgumentException
@@ -37,9 +37,9 @@ class StoreProducts extends Parser
      */
     public function __construct()
     {
-        $this->store_products = $this->get_products_arr();
-        $this->catalog_filtered_products = $this->get_filtered_catalog();
-        $this->final_products_arr = $this->get_final_products_arr();
+        $this->storeProducts = $this->getProductsArr();
+        $this->catalogFilteredProducts = $this->getFilteredCatalog();
+        $this->finalProductsArr = $this->getFinalProductsArr();
     }
 
     /**
@@ -47,29 +47,29 @@ class StoreProducts extends Parser
      * @throws SystemException
      * @throws ArgumentException
      */
-    private function get_filtered_catalog()
+    private function getFilteredCatalog()
     {
         try {
             $catalog = [];
 
             $dbItems = ElementTable::getList(array(
                 'select' => array('ID', 'IBLOCK_ID'),
-                'filter' => array('IBLOCK_ID' => (int)$this->catalog_ib_id)
+                'filter' => array('IBLOCK_ID' => (int)$this->catalogIbId)
             ));
 
             while ($arItem = $dbItems->fetch()) {
                 $dbProperty = CIBlockElement::getProperty(
                     $arItem['IBLOCK_ID'],
                     $arItem['ID'], [],
-                    array("CODE" => $this->unique_prod_prop)
+                    array("CODE" => $this->uniqueProductPropName)
                 );
 
                 while ($arProperty = $dbProperty->Fetch()) {
-                    $arItem[$this->unique_prod_prop] = $arProperty["VALUE"];
+                    $arItem[$this->uniqueProductPropName] = $arProperty["VALUE"];
                 }
 
-                if (Util::in_assoc_array($this->store_products, $this->unique_prod_prop, $arItem[$this->unique_prod_prop])) {
-                    $catalog[$arItem[$this->unique_prod_prop]] = $arItem;
+                if (Util::inAssocArray($this->storeProducts, $this->uniqueProductPropName, $arItem[$this->uniqueProductPropName])) {
+                    $catalog[$arItem[$this->uniqueProductPropName]] = $arItem;
                 }
             }
 
@@ -85,19 +85,19 @@ class StoreProducts extends Parser
     /**
      * @return array
      */
-    public function get_final_products_arr(): array
+    public function getFinalProductsArr(): array
     {
-        $final_arr = [];
+        $finalArr = [];
 
-        foreach ($this->store_products as $store_id => $store) {
+        foreach ($this->storeProducts as $storeId => $store) {
             foreach ($store as $art => $prod) {
-                $prod['PRODUCT_ID'] = $this->catalog_filtered_products[$art]['ID'];
-                $prod['STORE_ID'] = $store_id;
-                $final_arr[] = $prod;
+                $prod['PRODUCT_ID'] = $this->catalogFilteredProducts[$art]['ID'];
+                $prod['STORE_ID'] = $storeId;
+                $finalArr[] = $prod;
             }
         }
 
-        return $final_arr;
+        return $finalArr;
     }
 
     /**
@@ -107,48 +107,48 @@ class StoreProducts extends Parser
      * @throws SystemException
      * @throws Exception
      */
-    public function store_products_update()
+    public function storeProductsUpdate()
     {
         try {
             $totals = [];
-            $stores_to_records = [];
+            $storesToRecords = [];
 
-            $product_ids = array_unique(array_column($this->final_products_arr, 'PRODUCT_ID'));
+            $productIds = array_unique(array_column($this->finalProductsArr, 'PRODUCT_ID'));
 
-            foreach ($product_ids as $product_id) {
-                $store_product_table = StoreProductTable::getList(['filter' => ['=PRODUCT_ID' => $product_id]])->fetchAll();
+            foreach ($productIds as $productId) {
+                $storeProductTable = StoreProductTable::getList(['filter' => ['=PRODUCT_ID' => $productId]])->fetchAll();
 
-                foreach ($store_product_table as $ar_record) {
-                    $totals[$product_id][$ar_record['STORE_ID']] = $ar_record['AMOUNT'];
-                    $stores_to_records[$product_id][$ar_record['STORE_ID']] = $ar_record['ID'];
+                foreach ($storeProductTable as $arRecord) {
+                    $totals[$productId][$arRecord['STORE_ID']] = $arRecord['AMOUNT'];
+                    $storesToRecords[$productId][$arRecord['STORE_ID']] = $arRecord['ID'];
                 }
             }
 
-            foreach ($this->final_products_arr as $product) {
-                $product_id = $product['PRODUCT_ID'];
-                $store_id = $product['STORE_ID'];
-                $amount = $product[$this->catalog_quantity];
+            foreach ($this->finalProductsArr as $product) {
+                $productId = $product['PRODUCT_ID'];
+                $storeId = $product['STORE_ID'];
+                $amount = $product[$this->catalogQuantity];
 
-                if ($totals[$product_id][$store_id] != $amount) {
-                    if ($record_id = $stores_to_records[$product_id][$store_id]) {
+                if ($totals[$productId][$storeId] != $amount) {
+                    if ($recordId = $storesToRecords[$productId][$storeId]) {
                         StoreProductTable::update(
-                            $record_id,
+                            $recordId,
                             array(
                                 'AMOUNT' => $amount
                             )
                         );
                     } else {
-                        StoreProductTable::add(array('PRODUCT_ID' => $product_id, 'STORE_ID' => $store_id, 'AMOUNT' => $amount));
+                        StoreProductTable::add(array('PRODUCT_ID' => $productId, 'STORE_ID' => $storeId, 'AMOUNT' => $amount));
                     }
 
-                    $totals[$product_id][$store_id] = $amount;
+                    $totals[$productId][$storeId] = $amount;
                 }
 
             }
 
-            foreach ($totals as $product_id => $stores) {
-                ProductTable::update($product_id, array('QUANTITY' => array_sum($stores)));
-                Util::DD($stores);
+            foreach ($totals as $productId => $stores) {
+                ProductTable::update($productId, array('QUANTITY' => array_sum($stores)));
+                echo "Товар [#$productId] - обновлен.\n";
             }
 
         } catch (LoaderException $e) {
