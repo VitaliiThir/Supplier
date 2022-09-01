@@ -141,7 +141,7 @@ class StoreProducts extends Parser
                         StoreProductTable::add(array('PRODUCT_ID' => $product_id, 'STORE_ID' => $store_id, 'AMOUNT' => $amount));
                     }
 
-                    $totals[$product_id][$store_id] += $amount;
+                    $totals[$product_id][$store_id] = $amount;
                 }
 
             }
