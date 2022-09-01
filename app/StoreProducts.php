@@ -111,16 +111,16 @@ class StoreProducts extends Parser
     {
         try {
             $totals = [];
-            $storesToRecords = [];
+            $stores_to_records = [];
 
-            $productIds = array_unique(array_column($this->final_products_arr, 'PRODUCT_ID'));
+            $product_ids = array_unique(array_column($this->final_products_arr, 'PRODUCT_ID'));
 
-            foreach ($productIds as $productId) {
-                $store_product_table = StoreProductTable::getList(['filter'=>['=PRODUCT_ID' => $productId]])->fetchAll();
+            foreach ($product_ids as $product_id) {
+                $store_product_table = StoreProductTable::getList(['filter'=>['=PRODUCT_ID' => $product_id]])->fetchAll();
 
-                foreach ($store_product_table as $arRecord) {
-                    $totals[$productId][$arRecord['STORE_ID']] = $arRecord['AMOUNT'];
-                    $storesToRecords[$productId][$arRecord['STORE_ID']] = $arRecord['ID'];
+                foreach ($store_product_table as $ar_record) {
+                    $totals[$product_id][$ar_record['STORE_ID']] = $ar_record['AMOUNT'];
+                    $stores_to_records[$product_id][$ar_record['STORE_ID']] = $ar_record['ID'];
                 }
             }
 
@@ -129,10 +129,10 @@ class StoreProducts extends Parser
                 $store_id = $product['STORE_ID'];
                 $amount = $product[$this->catalog_quantity];
 
-                if ($recordId = $storesToRecords[$product_id][$store_id] ) {
+                if ($record_id = $stores_to_records[$product_id][$store_id] ) {
                     if ($totals[$product_id][$store_id] != $amount) {
                         StoreProductTable::update(
-                            $recordId,
+                            $record_id,
                             array(
                                 'AMOUNT' => $amount
                             )
