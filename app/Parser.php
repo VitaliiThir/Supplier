@@ -101,8 +101,7 @@ class Parser extends Supplier
      */
     public function getProductsArr(): array
     {
-        $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
-        $filesDirFullPath = $this->getFilesFolder($DOCUMENT_ROOT);
+        $filesDirFullPath = $this->getFilesFolder($_SERVER["DOCUMENT_ROOT"]);
         $prods = [];
 
         if (is_dir($filesDirFullPath)) {
