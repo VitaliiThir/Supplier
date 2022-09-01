@@ -116,7 +116,7 @@ class StoreProducts extends Parser
             $productIds = array_unique(array_column($this->finalProductsArr, 'PRODUCT_ID'));
 
             foreach ($productIds as $productId) {
-                $storeProductTable = StoreProductTable::getList(['filter' => ['=PRODUCT_ID' => $productId]])->fetchAll();
+                $storeProductTable = StoreProductTable::getList(['filter' => ['=PRODUCT_ID' => $productId, 'STORE.ACTIVE' => 'Y']])->fetchAll();
 
                 foreach ($storeProductTable as $arRecord) {
                     $totals[$productId][$arRecord['STORE_ID']] = $arRecord['AMOUNT'];
@@ -142,13 +142,21 @@ class StoreProducts extends Parser
                     }
 
                     $totals[$productId][$storeId] = $amount;
+                } else {
+                    if (isset($totals[$productId])) {
+                        unset($totals[$productId]);
+                    }
                 }
 
             }
 
-            foreach ($totals as $productId => $stores) {
-                ProductTable::update($productId, array('QUANTITY' => array_sum($stores)));
-                echo "Товар [#$productId] - обновлен\n";
+            if (!empty($totals)) {
+                foreach ($totals as $productId => $stores) {
+                    ProductTable::update($productId, array('QUANTITY' => array_sum($stores)));
+                    echo "Товар [#$productId] - обновлен\n";
+                }
+            } else {
+                echo 'Товаров для обновления нет';
             }
 
         } catch (LoaderException $e) {
