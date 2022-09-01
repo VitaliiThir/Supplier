@@ -18,5 +18,3 @@ Loader::includeModule('catalog');
 $store = new StoreProducts();
 
 $store->storeProductsUpdate();
-
-echo 'Обновление остатков успешно завершено!';

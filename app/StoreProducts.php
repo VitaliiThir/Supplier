@@ -150,11 +150,20 @@ class StoreProducts extends Parser
 
             }
 
+            $cnt = 0;
+
             foreach ($totals as $productId => $stores) {
                 if (!empty($stores)) {
                     ProductTable::update($productId, array('QUANTITY' => array_sum($stores)));
-                    echo "Товар [#$productId] - обновлен\n";
+                    echo "Товар [#$productId] - ok!\n";
+                    $cnt++;
                 }
+            }
+
+            if ($cnt > 0) {
+                echo 'Товары успешно обновлены!';
+            } else {
+                echo 'Нет товаров для обновления';
             }
 
         } catch (LoaderException $e) {
