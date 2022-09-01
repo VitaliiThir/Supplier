@@ -58,7 +58,7 @@ trait Config
      * @return string
      * Путь к директории со складами и файлами
      */
-    public function files_folder($document_root): string
+    public function files_folder($document_root = false): string
     {
         return $document_root ? "$document_root/$this->root_folder/$this->files_folder" : "/$this->root_folder/$this->files_folder";
     }

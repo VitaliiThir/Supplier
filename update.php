@@ -1,6 +1,9 @@
 <?php
 
-$_SERVER["DOCUMENT_ROOT"] = "/home/bitrix/www"; // или realpath(dirname(__FILE__)."/../..");
+use Bitrix\Main\Loader;
+use Supplier\StoreProducts;
+
+$_SERVER["DOCUMENT_ROOT"] = realpath(dirname(__FILE__)."/../"); // "c:/openserver/domains/bitrix.test/";
 $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
 
 define("NO_KEEP_STATISTIC", true);
@@ -10,6 +13,10 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.
 require('vendor/autoload.php');
 set_time_limit(0);
 
-// Код
+Loader::includeModule('catalog');
 
-require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_after.php");
+$store = new StoreProducts();
+
+$store->store_products_update();
+
+echo 'All store product updated!';

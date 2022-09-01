@@ -75,7 +75,7 @@ class Parser extends Supplier
     {
         $arr = false;
         $json = file_get_contents($file_name);
-        $json_data = json_decode($json,true);
+        $json_data = json_decode($json, true);
 
         foreach ($json_data as $item) {
             $art = trim($item['article']);
@@ -101,6 +101,7 @@ class Parser extends Supplier
      */
     public function get_products_arr(): array
     {
+        $_SERVER["DOCUMENT_ROOT"] = realpath(dirname(__FILE__)."/../");
         $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];
         $files_dir = $this->files_folder;
         $files_dir_full_path = $this->files_folder($DOCUMENT_ROOT);
@@ -142,6 +143,7 @@ class Parser extends Supplier
         }
 
         if (!is_array($prods) || empty($prods)) {
+            echo $DOCUMENT_ROOT;
             return false;
         }
 
