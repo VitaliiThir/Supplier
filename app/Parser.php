@@ -140,7 +140,7 @@ class Parser extends Supplier
         }
 
         if (!is_array($prods) || empty($prods)) {
-            return false;
+            echo 'Ошибка выгрузки!';
         }
 
         return $prods;
