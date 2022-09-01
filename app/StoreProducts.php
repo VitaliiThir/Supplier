@@ -152,14 +152,16 @@ class StoreProducts extends Parser
             foreach ($totals as $productId => $stores) {
                 if (in_array($productId, $updatableProductsIds)) {
                     ProductTable::update($productId, array('QUANTITY' => array_sum($stores)));
-                    echo "Product [#$productId] - updated (ok)\n";
+                    echo "\033[1;30m Product [#$productId] - updated \033[01;32m(ok)\n";
                 }
             }
 
-            if (count($updatableProductsIds) > 0) {
-                echo 'Products updated successfully!';
+            $updatedProductsCnt = count($updatableProductsIds);
+
+            if ($updatedProductsCnt > 0) {
+                echo "\033[01;33m $updatedProductsCnt product(s) updated successfully!";
             } else {
-                echo 'No products to update';
+                echo "\033[01;33m No products to update";
             }
 
         } catch (LoaderException $e) {
