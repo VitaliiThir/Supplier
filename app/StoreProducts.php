@@ -143,20 +143,18 @@ class StoreProducts extends Parser
 
                     $totals[$productId][$storeId] = $amount;
                 } else {
-                    if (isset($totals[$productId])) {
-                        unset($totals[$productId]);
+                    if (isset($totals[$productId][$storeId])) {
+                        unset($totals[$productId][$storeId]);
                     }
                 }
 
             }
 
-            if (!empty($totals)) {
-                foreach ($totals as $productId => $stores) {
+            foreach ($totals as $productId => $stores) {
+                if (!empty($stores)) {
                     ProductTable::update($productId, array('QUANTITY' => array_sum($stores)));
                     echo "Товар [#$productId] - обновлен\n";
                 }
-            } else {
-                echo 'Товаров для обновления нет';
             }
 
         } catch (LoaderException $e) {
