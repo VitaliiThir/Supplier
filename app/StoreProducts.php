@@ -116,7 +116,7 @@ class StoreProducts extends Parser
             $product_ids = array_unique(array_column($this->final_products_arr, 'PRODUCT_ID'));
 
             foreach ($product_ids as $product_id) {
-                $store_product_table = StoreProductTable::getList(['filter'=>['=PRODUCT_ID' => $product_id]])->fetchAll();
+                $store_product_table = StoreProductTable::getList(['filter' => ['=PRODUCT_ID' => $product_id]])->fetchAll();
 
                 foreach ($store_product_table as $ar_record) {
                     $totals[$product_id][$ar_record['STORE_ID']] = $ar_record['AMOUNT'];
@@ -125,29 +125,30 @@ class StoreProducts extends Parser
             }
 
             foreach ($this->final_products_arr as $product) {
-                $product_id = (int) $product['PRODUCT_ID'];
+                $product_id = $product['PRODUCT_ID'];
                 $store_id = $product['STORE_ID'];
                 $amount = $product[$this->catalog_quantity];
 
-                if ($record_id = $stores_to_records[$product_id][$store_id] ) {
-                    if ($totals[$product_id][$store_id] != $amount) {
+                if ($totals[$product_id][$store_id] != $amount) {
+                    if ($record_id = $stores_to_records[$product_id][$store_id]) {
                         StoreProductTable::update(
                             $record_id,
                             array(
                                 'AMOUNT' => $amount
                             )
                         );
+                    } else {
+                        StoreProductTable::add(array('PRODUCT_ID' => $product_id, 'STORE_ID' => $store_id, 'AMOUNT' => $amount));
                     }
-                } else {
-                    StoreProductTable::add(array('PRODUCT_ID' => $product_id, 'STORE_ID' => $store_id, 'AMOUNT' => $amount));
-                }
 
-                $totals[$product_id] += $amount;
+                    $totals[$product_id][$store_id] += $amount;
+                }
 
             }
 
             foreach ($totals as $product_id => $stores) {
                 ProductTable::update($product_id, array('QUANTITY' => array_sum($stores)));
+                Util::DD($stores);
             }
 
         } catch (LoaderException $e) {
