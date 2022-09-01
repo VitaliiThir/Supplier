@@ -58,22 +58,22 @@ trait Config
      * @return string
      * Путь к директории со складами и файлами
      */
-    public function getFilesFolder($documentRoot = false): string
+    public function getFilesFolder($document_root = false): string
     {
-        return $documentRoot ? "$documentRoot/$this->rootFolderName/$this->filesFolderName" : "/$this->rootFolderName/$this->filesFolderName";
+        return $document_root ? "$document_root/$this->rootFolderName/$this->filesFolderName" : "/$this->rootFolderName/$this->filesFolderName";
     }
 
     /**
-     * @param $documentRoot
+     * @param $document_root
      * @param $data
      * @return void
      * Запись ошибок в файл errors_logs.txt
      */
-    public function writeErrorLogs($documentRoot, $data)
+    public function writeErrorLogs($document_root, $data)
     {
         $dateTimeObj = new DateTime();
         $dateTime = $dateTimeObj->format('Y.m.d H:i:s');
 
-        file_put_contents("$documentRoot/$this->rootFolderName/$this->errorLogFileName", "$dateTime - $data", FILE_APPEND);
+        file_put_contents("$document_root/$this->rootFolderName/$this->errorLogFileName", "$dateTime - $data", FILE_APPEND);
     }
 }
