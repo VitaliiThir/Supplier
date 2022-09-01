@@ -28,7 +28,9 @@ class Parser extends Supplier
         }
 
         if (!is_array($arr) || empty($arr)) {
-            $this->writeErrorLogs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла XML;\n");
+            $errorTxt = "File processing error XML";
+            $this->writeErrorLogs($_SERVER["DOCUMENT_ROOT"], "$errorTxt;\n");
+            echo "\033[1;31m $errorTxt\n";
         }
 
         return $arr;
@@ -60,7 +62,9 @@ class Parser extends Supplier
         if (is_array($arr) && !empty($arr)) {
             return array_slice($arr, 1);
         } else {
-            $this->writeErrorLogs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла CSV;\n");
+            $errorTxt = "File processing error CSV";
+            $this->writeErrorLogs($_SERVER["DOCUMENT_ROOT"], "$errorTxt;\n");
+            echo "\033[1;31m $errorTxt\n";
         }
 
         return $arr;
@@ -90,7 +94,9 @@ class Parser extends Supplier
         }
 
         if (!is_array($arr) || empty($arr)) {
-            $this->writeErrorLogs($_SERVER["DOCUMENT_ROOT"], "Ошибка обработки файла JSON;\n");
+            $errorTxt = "File processing error JSON";
+            $this->writeErrorLogs($_SERVER["DOCUMENT_ROOT"], "$errorTxt;\n");
+            echo "\033[1;31m $errorTxt\n";
         }
 
         return $arr;
