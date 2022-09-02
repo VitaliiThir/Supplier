@@ -146,7 +146,7 @@ class Parser extends Supplier
         }
 
         if (!is_array($prods) || empty($prods)) {
-            $errorTxt = "Upload error!";
+            $errorTxt = "No files to upload";
             $this->writeErrorLogs($_SERVER["DOCUMENT_ROOT"], "$errorTxt;\n");
             echo "\033[1;31m $errorTxt!\n";
             die();
