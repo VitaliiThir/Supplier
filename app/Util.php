@@ -48,6 +48,11 @@ class Util
         return false;
     }
 
+    /**
+     * @param $dir
+     * @return void
+     * Удаление файлов из директории
+     */
     static function clearUploads($dir)
     {
         if (is_dir($dir)) {

@@ -85,7 +85,7 @@ class StoreProducts extends Parser
     /**
      * @return array
      */
-    public function getFinalProductsArr(): array
+    private function getFinalProductsArr(): array
     {
         $finalArr = [];
 
