@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Products>
+    <Item>
+        <Article>174-19-06</Article>
+        <Count>100</Count>
+    </Item>
+    <Item>
+        <Article>174-19-04</Article>
+        <Count>100</Count>
+    </Item>
+    <Item>
+        <Article>174-15-06</Article>
+        <Count>200</Count>
+    </Item>
+    <Item>
+        <Article>174-15-04</Article>
+        <Count>200</Count>
+    </Item>
+    <Item>
+        <Article>174-15-03</Article>
+        <Count>300</Count>
+    </Item>
+    <Item>
+        <Article>174-15-02</Article>
+        <Count>250</Count>
+    </Item>
+    <Item>
+        <Article>174-15-01</Article>
+        <Count>150</Count>
+    </Item>
+</Products>
