@@ -159,10 +159,12 @@ class StoreProducts extends Parser
             $updatedProductsCnt = count($updatableProductsIds);
 
             if ($updatedProductsCnt > 0) {
-                echo "\033[01;33m $updatedProductsCnt product(s) updated successfully!";
+                echo "\033[01;33m Товары успешно обновлены! Кол-во ($updatedProductsCnt)";
             } else {
-                echo "\033[01;33m No products to update";
+                echo "\033[01;33m Товаров для обновления нет";
             }
+
+            Util::clearUploads($this->getFilesFolder($_SERVER["DOCUMENT_ROOT"]));
 
         } catch (LoaderException $e) {
             Debug::dump($e->getMessage());

@@ -47,4 +47,22 @@ class Util
 
         return false;
     }
+
+    static function clearUploads($dir)
+    {
+        if (is_dir($dir)) {
+            $store = scandir($dir);
+
+            foreach ($store as $storeId) {
+                if ($storeId != '.' && $storeId != '..') {
+                    if (is_dir("$dir/$storeId") && !empty(glob("$dir/$storeId/*.*"))) {
+                        $file = scandir("$dir/$storeId", 1);
+                        $fileName = $file[0];
+
+                        unlink("$dir/$storeId/$fileName");
+                    }
+                }
+            }
+        }
+    }
 }
