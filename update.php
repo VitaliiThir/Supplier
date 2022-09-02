@@ -22,4 +22,4 @@ $store = new StoreProducts();
 $store->storeProductsUpdate();
 
 // Снова разрешать доступ к supplier/store для добавления новых файлов в случае успешного обновления
-// После успешной выгрузки удалять все файлы из папок supplier/store (1,2,3)
+// После успешноого обновления удалять все файлы из папок supplier/store (1/file.*,2/file.*,3/file.*)
