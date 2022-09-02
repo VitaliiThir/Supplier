@@ -15,6 +15,11 @@ set_time_limit(0);
 
 Loader::includeModule('catalog');
 
+// В идеале здесь перекрывать доступ к supplier/store для добавления новых файлов, пока не отработает выгрузка
+
 $store = new StoreProducts();
 
 $store->storeProductsUpdate();
+
+// Снова разрешать доступ к supplier/store для добавления новых файлов в случае успешного обновления
+// После успешной выгрузки удалять все файлы из папок supplier/store (1,2,3)
